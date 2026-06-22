@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.jira.dto.DepartmentDTO;
 import com.jira.entities.Department;
 import com.jira.entities.Users;
+import com.jira.exception.ResourceNotFoundException;
 import com.jira.repository.DepartmentRepo;
 import com.jira.repository.UserRepository;
 import com.jira.service.DepartmentService;
@@ -44,7 +45,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 	public DepartmentDTO getDepartmentById(Integer deptId) {
 		// TODO Auto-generated method stub
 		
-		Department department = departmentRepo.findById(deptId).orElse(null);
+		Department department = departmentRepo.findById(deptId).orElseThrow(()->new ResourceNotFoundException("Department not found with id :"+deptId));
 		
 		return mapper.map(department, DepartmentDTO.class);
 	}
@@ -74,8 +75,8 @@ public class DepartmentServiceImpl implements DepartmentService {
 		// TODO Auto-generated method stub
 		
 		boolean flag = false;
-		
-		Department department = departmentRepo.findById(deptId).orElse(null);
+
+		Department department = departmentRepo.findById(deptId).orElseThrow(()->new ResourceNotFoundException("Department not found with id :"+deptId));
 		
 		if (department!=null) {
 			
@@ -89,9 +90,9 @@ public class DepartmentServiceImpl implements DepartmentService {
 	@Override
 	public DepartmentDTO assignDeptToUser(Integer deptId, Integer userId) {
 		// TODO Auto-generated method stub
-		
-		Department department = departmentRepo.findById(deptId).orElse(null);
-		Users users = userRepository.findById(userId).orElse(null);
+
+		Department department = departmentRepo.findById(deptId).orElseThrow(()->new ResourceNotFoundException("Department not found with id :"+deptId));
+		Users users = userRepository.findById(userId).orElseThrow(()->new ResourceNotFoundException("Department not found with id :"+deptId));
 		
 		if (department!=null && users!=null) {
 			

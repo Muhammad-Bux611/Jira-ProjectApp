@@ -10,6 +10,7 @@ import com.jira.dto.RoleDto;
 import com.jira.dto.UserDto;
 import com.jira.entities.Role;
 import com.jira.entities.Users;
+import com.jira.exception.ResourceNotFoundException;
 import com.jira.repository.RoleRepository;
 import com.jira.repository.UserRepository;
 import com.jira.service.RoleService;
@@ -49,9 +50,9 @@ public class RoleServiceImpl  implements RoleService{
 	public UserDto assignRoleToUser(Integer roleId, Integer userId) {
 		// TODO Auto-generated method stub
 		
-		Role role = roleRepository.findById(roleId).orElse(null);
+		Role role = roleRepository.findById(roleId).orElseThrow(()->new ResourceNotFoundException("Role not found with id :"+roleId));
 		
-		Users users = userRepository.findById(userId).orElse(null);
+		Users users = userRepository.findById(userId).orElseThrow(()->new ResourceNotFoundException("User not found with id :"+userId));
 		
 		users.setRole(role);
 		

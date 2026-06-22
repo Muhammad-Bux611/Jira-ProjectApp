@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.jira.dto.ProjectDTO;
 import com.jira.entities.Department;
 import com.jira.entities.Project;
+import com.jira.exception.ResourceNotFoundException;
 import com.jira.payloads.ProjectStatus;
 import com.jira.repository.DepartmentRepo;
 import com.jira.repository.ProjectRepository;
@@ -42,7 +43,7 @@ public class ProjectServiceImpl implements ProjectService {
 	public ProjectDTO getProjectById(Integer projectId) {
 		// TODO Auto-generated method stub
 		
-		Project project = projectRepository.findById(projectId).orElse(null);
+		Project project = projectRepository.findById(projectId).orElseThrow(()->new ResourceNotFoundException("Project not found with id :"+projectId));
 		
 		return mapper.map(project, ProjectDTO.class);
 	}
@@ -64,7 +65,7 @@ public class ProjectServiceImpl implements ProjectService {
 		
 		boolean flag = false;
 		
-		Project project = projectRepository.findById(projectId).orElse(null);
+		Project project = projectRepository.findById(projectId).orElseThrow(()->new ResourceNotFoundException("Project not found with id :"+projectId));
 		
 		if (project!=null) {
 			projectRepository.delete(project);
@@ -86,8 +87,8 @@ public class ProjectServiceImpl implements ProjectService {
 	public ProjectDTO assignProjectToDepartment(Integer projectId, Integer deptId) {
 		// TODO Auto-generated method stub
 		
-		Project project = projectRepository.findById(projectId).orElse(null);
-		Department department = departmentRepo.findById(deptId).orElse(null);
+		Project project = projectRepository.findById(projectId).orElseThrow(()->new ResourceNotFoundException("Project not found with id :"+projectId));
+		Department department = departmentRepo.findById(deptId).orElseThrow(()->new ResourceNotFoundException("Department not found with id :"+deptId));
 		
 		if (project!=null && department!=null) {
 			project.setDepartment(department);

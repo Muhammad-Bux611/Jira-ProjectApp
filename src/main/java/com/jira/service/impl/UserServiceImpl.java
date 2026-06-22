@@ -6,12 +6,14 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.ResourceAccessException;
 
 import com.jira.dto.DepartmentDTO;
 import com.jira.dto.UserDto;
 import com.jira.entities.AuthRequest;
 import com.jira.entities.AuthResponse;
 import com.jira.entities.Users;
+import com.jira.exception.ResourceNotFoundException;
 import com.jira.repository.UserRepository;
 import com.jira.service.UserService;
 
@@ -63,7 +65,7 @@ public class UserServiceImpl implements UserService{
 		
 		boolean flag = false;
 		
-		Users user = userRepository.findById(userId).orElse(null);
+		Users user = userRepository.findById(userId).orElseThrow(()->new ResourceNotFoundException("User not found with id :"+userId));
 		
 		if (user!=null) {
 			userRepository.delete(user);
