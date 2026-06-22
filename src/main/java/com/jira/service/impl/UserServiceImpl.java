@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.jira.dto.DepartmentDTO;
 import com.jira.dto.UserDto;
 import com.jira.entities.AuthRequest;
 import com.jira.entities.AuthResponse;
@@ -52,7 +53,6 @@ public class UserServiceImpl implements UserService{
 		List<Users> allUser = userRepository.findAll();
 		
 		List<UserDto> list = allUser.stream().map(user->modelMapper.map(user, UserDto.class)).toList();
-		
 		
 		return list;
 	}

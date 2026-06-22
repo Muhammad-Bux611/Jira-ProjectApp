@@ -1,5 +1,6 @@
 package com.jira.dto;
 
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,8 +8,11 @@ import lombok.Setter;
 @Getter
 public class DepartmentDTO {
 
-	
+
+	private Integer deptId;
 	private String deptName;
 	private String deptDescription;
+	
+ 
 	
 }

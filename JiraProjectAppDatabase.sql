@@ -13,3 +13,5 @@ select * from role;
 
 select
   * from department;
+  
+  select * from project;

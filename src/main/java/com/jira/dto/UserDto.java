@@ -2,7 +2,6 @@ package com.jira.dto;
 
 import java.time.LocalDateTime;
 
-import com.jira.entities.Role;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -18,7 +17,7 @@ public class UserDto {
 	private String password;
 	private LocalDateTime dateTime;
 	
-	
-	private Role role;
+	private DepartmentDTO department;
+	private RoleDto role;
 	
 }

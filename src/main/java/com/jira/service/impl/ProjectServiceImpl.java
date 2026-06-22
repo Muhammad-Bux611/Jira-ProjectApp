@@ -1,12 +1,16 @@
 package com.jira.service.impl;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.jira.dto.ProjectDTO;
+import com.jira.entities.Department;
 import com.jira.entities.Project;
+import com.jira.payloads.ProjectStatus;
+import com.jira.repository.DepartmentRepo;
 import com.jira.repository.ProjectRepository;
 import com.jira.service.ProjectService;
 
@@ -20,7 +24,8 @@ public class ProjectServiceImpl implements ProjectService {
 	@Autowired
 	ProjectRepository projectRepository;
 
-	
+	@Autowired
+	DepartmentRepo departmentRepo;
 
 	@Override
 	public ProjectDTO createProject(ProjectDTO projectDTO) {
@@ -67,6 +72,31 @@ public class ProjectServiceImpl implements ProjectService {
 		}
 		
 		return flag;
+	}
+
+	@Override
+	public List<ProjectDTO> getProjectByStatus(ProjectStatus projectStatus) {
+		// TODO Auto-generated method stub
+		List<Project> projectWithStatus = projectRepository.findBystatus(projectStatus);
+		List<ProjectDTO> projectDto  = projectWithStatus.stream().map(project->mapper.map(project, ProjectDTO.class)).toList();
+		return projectDto;
+	}
+
+	@Override
+	public ProjectDTO assignProjectToDepartment(Integer projectId, Integer deptId) {
+		// TODO Auto-generated method stub
+		
+		Project project = projectRepository.findById(projectId).orElse(null);
+		Department department = departmentRepo.findById(deptId).orElse(null);
+		
+		if (project!=null && department!=null) {
+			project.setDepartment(department);
+			Project savedProject = projectRepository.save(project);
+			
+			return mapper.map(savedProject, ProjectDTO.class);
+		}
+		
+		return null;
 	}
 
 }

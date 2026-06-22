@@ -13,6 +13,8 @@ import lombok.Setter;
 
 public class ProjectDTO {
 
+	
+	private Integer projectId;
 
     private String projectName;
 

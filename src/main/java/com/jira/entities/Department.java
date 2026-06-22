@@ -2,6 +2,7 @@ package com.jira.entities;
 
 import java.util.List;
 
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -24,7 +25,7 @@ public class Department {
 	
 	@OneToMany(mappedBy = "department")
 	List<Users> users;
-	
+//	
 	@OneToMany(mappedBy = "department")
 	List<Project> projects;
 	
