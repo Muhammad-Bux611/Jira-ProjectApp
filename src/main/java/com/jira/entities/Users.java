@@ -1,13 +1,14 @@
 package com.jira.entities;
 
 import java.time.LocalDateTime;
-
+import java.util.List;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,5 +29,8 @@ public class Users {
 	private Role role;
 	@ManyToOne
 	private Department department;
+	
+	@OneToMany(mappedBy = "users")
+	private List<ProjectMember> projectMember;
 	
 }
