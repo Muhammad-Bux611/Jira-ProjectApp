@@ -21,9 +21,7 @@ public class ProjectMember {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer projectMemberId;
 
-    private LocalDateTime joinedAt;
 
-    private Boolean active;
 
     @ManyToOne
     @JoinColumn(name="project_Id")

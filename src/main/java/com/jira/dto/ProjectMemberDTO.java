@@ -21,9 +21,7 @@ public class ProjectMemberDTO {
 	
     private Integer projectMemberId;
 
-    private LocalDateTime joinedAt;
 
-    private Boolean active;
 
     private ProjectDTO projectDTO;
 

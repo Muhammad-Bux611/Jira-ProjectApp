@@ -8,13 +8,15 @@ import com.jira.dto.UserDto;
 
 public interface ProjectMemberService {
 	
-	public ProjectMemberDTO createProjectMember(ProjectMemberDTO projectMemberDTO);
-	public ProjectMemberDTO getProjectMemberById(Integer projectId);
+	public ProjectMemberDTO createProjectMember(Integer projectId, Integer userId);
+	public ProjectMemberDTO getProjectMemberById(Integer projectMemberId);
 	public List<ProjectMemberDTO> getAllProjectMembers();
 	public boolean deleteProjectMember(Integer projectMemberId);
 	public List<ProjectMemberDTO> listOfProjectMemberByUserId(Integer userId);
 	public List<ProjectMemberDTO> listOfProjectMemberByProjectId(Integer projectId);
 	public List<UserDto> listOfUserUsingProjectId(Integer projectId);
 	public List<ProjectDTO> listOfPrpjectUsingUserId(Integer userId);
+	
+	public boolean checkdublicateAssignment(Integer projectId,Integer userId);
  
 }

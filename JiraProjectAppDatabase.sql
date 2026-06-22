@@ -15,3 +15,8 @@ select
   * from department;
   
   select * from project;
+  
+  select * from project_member;
+  
+  drop
+   table project_member;

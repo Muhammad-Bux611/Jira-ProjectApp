@@ -2,48 +2,101 @@ package com.jira.service.impl;
 
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.jira.dto.ProjectDTO;
 import com.jira.dto.ProjectMemberDTO;
 import com.jira.dto.UserDto;
+import com.jira.entities.Project;
+import com.jira.entities.ProjectMember;
+import com.jira.entities.Users;
+import com.jira.exception.ResourceNotFoundException;
+import com.jira.repository.ProjectMemberRepository;
 import com.jira.service.ProjectMemberService;
 @Service
 public class ProjectMemberServiceImp implements ProjectMemberService {
+	
+	@Autowired
+	ProjectMemberRepository projectMemberRepository;
+	@Autowired
+	ModelMapper mapper;
 
 	@Override
-	public ProjectMemberDTO createProjectMember(ProjectMemberDTO projectMemberDTO) {
-		// TODO Auto-generated method stub
-		return null;
+	public ProjectMemberDTO createProjectMember(Integer projectId,Integer userId) {
+		
+		Users user = projectMemberRepository.findByUsersUserId(userId).orElseThrow(()->new ResourceNotFoundException("Inside the project memeber user with"+
+		userId+" is not present or found"
+				));
+		
+
+		Project project = projectMemberRepository.findByProjectProjectId(projectId).orElseThrow(()->new ResourceNotFoundException("Inside the project memeber project with"+
+		projectId+" is not present or found"
+				));
+		
+		
+		ProjectMember projectMember = new ProjectMember();
+		projectMember.setProject(project);
+		projectMember.setUsers(user);
+		
+		ProjectMember savedProjectMember = projectMemberRepository.save(projectMember);
+		
+		return mapper.map(savedProjectMember, ProjectMemberDTO.class);
 	}
 
 	@Override
-	public ProjectMemberDTO getProjectMemberById(Integer projectId) {
-		// TODO Auto-generated method stub
-		return null;
+	public ProjectMemberDTO getProjectMemberById(Integer projectMemberId) {
+		
+		ProjectMember projectMember = projectMemberRepository.findById(projectMemberId).orElseThrow(()->new ResourceNotFoundException("ProjectMember with id"+projectMemberId+" is not found"));
+		
+		return mapper.map(projectMember, ProjectMemberDTO.class);
 	}
 
 	@Override
 	public List<ProjectMemberDTO> getAllProjectMembers() {
 		// TODO Auto-generated method stub
-		return null;
+		
+		List<ProjectMember> listOfProjectMembers = projectMemberRepository.findAll();
+		List<ProjectMemberDTO> listOfProjectMemberDTO = listOfProjectMembers.stream().map(projectmember->mapper.map(projectmember, ProjectMemberDTO.class)).toList();
+		
+		return listOfProjectMemberDTO;
 	}
 
 	@Override
 	public boolean deleteProjectMember(Integer projectMemberId) {
 		// TODO Auto-generated method stub
-		return false;
+		boolean flag =false;
+		ProjectMember projectMember = projectMemberRepository.findById(projectMemberId).orElseThrow(()->new ResourceNotFoundException("ProjectMember with id"+projectMemberId+" is not found"));
+		
+		if (projectMember!=null) {
+			projectMemberRepository.delete(projectMember);
+			flag = true;
+		}
+		
+		
+		return flag;
 	}
 
 	@Override
 	public List<ProjectMemberDTO> listOfProjectMemberByUserId(Integer userId) {
-		// TODO Auto-generated method stub
+		
+//		List<ProjectMember> projectMembers = projectMemberRepository.findByUsersUserId(userId).orElseThrow(()->new ResourceNotFoundException("Project Members are not present with the user id"+userId));
+//		
+//		List<ProjectMemberDTO> projectMemberDtos = projectMembers.stream().map(projectMember->mapper.map(projectMember, ProjectMemberDTO.class)).toList();
+		
 		return null;
 	}
 
 	@Override
 	public List<ProjectMemberDTO> listOfProjectMemberByProjectId(Integer projectId) {
 		// TODO Auto-generated method stub
+		
+//		List<ProjectMember> projectMembers = projectMemberRepository.findByProjectsProjectId(projectId)
+//		.orElseThrow(()->new ResourceNotFoundException("Project Members are not present with the project id"+projectId))
+//		;
+//		
+//		List<ProjectMemberDTO> projectMemberDtos = projectMembers.stream().map(projectMember->mapper.map(projectMember, ProjectMemberDTO.class)).toList();
 		return null;
 	}
 
@@ -57,6 +110,19 @@ public class ProjectMemberServiceImp implements ProjectMemberService {
 	public List<ProjectDTO> listOfPrpjectUsingUserId(Integer userId) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public boolean checkdublicateAssignment(Integer projectId, Integer userId) {
+		// TODO Auto-generated method stub
+		
+		boolean existsByProjectProjectIdAndUserUserId = projectMemberRepository.existsByProjectProjectIdAndUsersUserId(projectId, userId);
+		
+		if (existsByProjectProjectIdAndUserUserId) {
+			return true;
+		}
+		
+		return false;
 	}
 
 }
