@@ -53,7 +53,7 @@ public class ProjectController {
 	}
 	
 	@PostMapping("/assignProjectToDepartment/project/{projectId}/department/{deptId}")
-	public ProjectDTO  assignProjectToSpecificDept(Integer projectId, Integer deptId) {
+	public ProjectDTO  assignProjectToSpecificDept(@PathVariable Integer projectId, @PathVariable Integer deptId) {
 		
 	return 	projectService.assignProjectToDepartment(projectId, deptId);
 		

@@ -31,7 +31,7 @@ public class ProjectDTO {
     
     private ProjectStatus status;
 
-    private DepartmentDTO departmentDTO;
+    private DepartmentDTO department;
 	
 	
 }

@@ -23,9 +23,9 @@ public class ProjectMemberDTO {
 
 
 
-    private ProjectDTO projectDTO;
+    private ProjectDTO project;
 
-    private UserDto userDto;
+    private UserDto users;
 	
 	
 }

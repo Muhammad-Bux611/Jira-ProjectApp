@@ -14,6 +14,8 @@ import com.jira.entities.ProjectMember;
 import com.jira.entities.Users;
 import com.jira.exception.ResourceNotFoundException;
 import com.jira.repository.ProjectMemberRepository;
+import com.jira.repository.ProjectRepository;
+import com.jira.repository.UserRepository;
 import com.jira.service.ProjectMemberService;
 @Service
 public class ProjectMemberServiceImp implements ProjectMemberService {
@@ -23,19 +25,24 @@ public class ProjectMemberServiceImp implements ProjectMemberService {
 	@Autowired
 	ModelMapper mapper;
 
+	@Autowired
+	UserRepository userRepository;
+	@Autowired
+	ProjectRepository projectRepository;
+	
 	@Override
 	public ProjectMemberDTO createProjectMember(Integer projectId,Integer userId) {
 		
-		Users user = projectMemberRepository.findByUsersUserId(userId).orElseThrow(()->new ResourceNotFoundException("Inside the project memeber user with"+
+		Users user = userRepository.findById(userId).orElseThrow(()->new ResourceNotFoundException("user with"+
 		userId+" is not present or found"
 				));
 		
 
-		Project project = projectMemberRepository.findByProjectProjectId(projectId).orElseThrow(()->new ResourceNotFoundException("Inside the project memeber project with"+
+		Project project = projectRepository.findById(projectId).orElseThrow(()->new ResourceNotFoundException("project with"+
 		projectId+" is not present or found"
 				));
-		
-		
+//		
+//		
 		ProjectMember projectMember = new ProjectMember();
 		projectMember.setProject(project);
 		projectMember.setUsers(user);

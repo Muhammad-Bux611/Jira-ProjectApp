@@ -29,6 +29,6 @@ public class ProjectMemberController {
 		
 		ProjectMemberDTO projectMember = projectMemberService.createProjectMember(projectId,userId);
 		
-		return null;
+		return ResponseEntity.status(HttpStatus.CREATED).body(projectMember);
 	}
 }
