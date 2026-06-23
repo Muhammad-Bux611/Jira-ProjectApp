@@ -18,5 +18,9 @@ public interface ProjectMemberService {
 	public List<ProjectDTO> listOfPrpjectUsingUserId(Integer userId);
 	
 	public boolean checkdublicateAssignment(Integer projectId,Integer userId);
+	
+	public ProjectMemberDTO getUserForSpecificProject(Integer projectId,Integer userId);
+	
+	public boolean removeUserFromProject(Integer projectId, Integer userId) ;
  
 }

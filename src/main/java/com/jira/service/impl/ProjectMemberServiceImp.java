@@ -135,7 +135,34 @@ public class ProjectMemberServiceImp implements ProjectMemberService {
 		
 		return false;
 	}
-	
-	
+
+	@Override
+	public ProjectMemberDTO getUserForSpecificProject(Integer projectId, Integer userId) {
+		// TODO Auto-generated method stub
+		
+		ProjectMember byProjectProjectIdAndUserUserId = projectMemberRepository.findByProjectProjectIdAndUsersUserId(projectId, userId);
+		
+		return mapper.map(byProjectProjectIdAndUserUserId, ProjectMemberDTO.class);
+	}
+	@Override
+	public boolean removeUserFromProject(Integer projectId, Integer userId) {
+		
+		boolean isRemoved= false;
+		
+		boolean existsByProjectProjectIdAndUsersUserId = projectMemberRepository.existsByProjectProjectIdAndUsersUserId(projectId, userId);
+		
+		if (existsByProjectProjectIdAndUsersUserId) {
+			
+			ProjectMember byProjectProjectIdAndUserUserId = projectMemberRepository.findByProjectProjectIdAndUsersUserId(projectId, userId);
+			
+			projectMemberRepository.delete(byProjectProjectIdAndUserUserId);
+			
+			isRemoved=true;
+			
+		}
+		
+		return isRemoved;
+		
+	}
 
 }

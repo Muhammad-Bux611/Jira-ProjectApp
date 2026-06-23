@@ -11,11 +11,8 @@ import com.jira.entities.Users;
 
 public interface ProjectMemberRepository extends JpaRepository<ProjectMember, Integer> {
 	
-//	Optional<List<ProjectMember>> findByUserUserId(Integer userId);
-//	Optional<List<ProjectMember>> findProjectsProjectId(Integer projectId);
-	
 	List<ProjectMember> findAllByProjectProjectId(Integer projectId);
-	
+	ProjectMember findByProjectProjectIdAndUsersUserId(Integer projectId,Integer userId);
 	 boolean existsByProjectProjectIdAndUsersUserId(
 	            Integer projectId,
 	            Integer userId
