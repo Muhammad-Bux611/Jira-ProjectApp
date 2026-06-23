@@ -165,4 +165,18 @@ public class ProjectMemberServiceImp implements ProjectMemberService {
 		
 	}
 
+	@Override
+	public List<ProjectDTO> getAllProjectByUserId(Integer userId) {
+		// TODO Auto-generated method stub
+		
+		List<ProjectMember> listOfProject = projectMemberRepository.findAllByUsersUserId(userId);
+		
+		if (listOfProject.isEmpty()) {
+			throw new ResourceNotFoundException("Not any Project that is assigned to specific user that has id "+userId);
+		}
+		
+		List<ProjectDTO> list = listOfProject.stream().map(project->mapper.map(project.getProject(), ProjectDTO.class)).toList();
+		return list;
+	}
+
 }

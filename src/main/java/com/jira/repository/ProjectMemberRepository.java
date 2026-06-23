@@ -20,5 +20,7 @@ public interface ProjectMemberRepository extends JpaRepository<ProjectMember, In
 	 
 	 Optional<Users> findByUsersUserId(Integer userId);
 	 Optional<Project> findByProjectProjectId(Integer projectId);
+	 
+	 List<ProjectMember> findAllByUsersUserId(Integer userId);
  
 }

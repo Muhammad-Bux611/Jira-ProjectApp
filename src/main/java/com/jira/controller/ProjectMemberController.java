@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.jira.dto.ProjectDTO;
 import com.jira.dto.ProjectMemberDTO;
 import com.jira.service.ProjectMemberService;
 
@@ -62,5 +63,13 @@ public class ProjectMemberController {
 			
 		}
 		
+	}
+	
+	@GetMapping("/projects/users/{userId}")
+	public ResponseEntity<?> getAllProjectsForSpecificUser(@PathVariable Integer userId){
+		
+		List<ProjectDTO> allProjectByUserId = projectMemberService.getAllProjectByUserId(userId);
+		
+		return ResponseEntity.status(HttpStatus.OK).body(allProjectByUserId);
 	}
 }

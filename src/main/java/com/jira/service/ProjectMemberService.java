@@ -22,5 +22,6 @@ public interface ProjectMemberService {
 	public ProjectMemberDTO getUserForSpecificProject(Integer projectId,Integer userId);
 	
 	public boolean removeUserFromProject(Integer projectId, Integer userId) ;
- 
+
+	public List<ProjectDTO> getAllProjectByUserId(Integer userId);
 }
