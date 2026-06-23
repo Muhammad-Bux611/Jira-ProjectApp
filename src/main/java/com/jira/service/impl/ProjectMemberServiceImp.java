@@ -90,21 +90,25 @@ public class ProjectMemberServiceImp implements ProjectMemberService {
 		
 //		List<ProjectMember> projectMembers = projectMemberRepository.findByUsersUserId(userId).orElseThrow(()->new ResourceNotFoundException("Project Members are not present with the user id"+userId));
 //		
-//		List<ProjectMemberDTO> projectMemberDtos = projectMembers.stream().map(projectMember->mapper.map(projectMember, ProjectMemberDTO.class)).toList();
-		
+//		
 		return null;
 	}
 
 	@Override
 	public List<ProjectMemberDTO> listOfProjectMemberByProjectId(Integer projectId) {
-		// TODO Auto-generated method stub
 		
-//		List<ProjectMember> projectMembers = projectMemberRepository.findByProjectsProjectId(projectId)
-//		.orElseThrow(()->new ResourceNotFoundException("Project Members are not present with the project id"+projectId))
-//		;
-//		
-//		List<ProjectMemberDTO> projectMemberDtos = projectMembers.stream().map(projectMember->mapper.map(projectMember, ProjectMemberDTO.class)).toList();
-		return null;
+		
+		List<ProjectMember> list = projectMemberRepository.findAllByProjectProjectId(projectId);
+		
+		if (list.isEmpty()) {
+			throw new ResourceNotFoundException("Project is not assgined yet");
+		
+		}
+		
+		List<ProjectMemberDTO> projectMemberDtos = list.stream().map(projectMember->mapper.map(projectMember, ProjectMemberDTO.class)).toList();
+		
+		
+		return projectMemberDtos;
 	}
 
 	@Override
@@ -131,5 +135,7 @@ public class ProjectMemberServiceImp implements ProjectMemberService {
 		
 		return false;
 	}
+	
+	
 
 }

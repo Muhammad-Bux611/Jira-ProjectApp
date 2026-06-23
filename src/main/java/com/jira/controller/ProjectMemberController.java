@@ -1,8 +1,11 @@
 package com.jira.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,5 +33,15 @@ public class ProjectMemberController {
 		ProjectMemberDTO projectMember = projectMemberService.createProjectMember(projectId,userId);
 		
 		return ResponseEntity.status(HttpStatus.CREATED).body(projectMember);
+	}
+	
+	
+	@GetMapping("/projects/{projectId}/members")
+	public ResponseEntity<?> getAllUsersForSpecificProject(@PathVariable Integer projectId){
+		
+		List<ProjectMemberDTO> listOfProjectMemberByProjectId = projectMemberService.listOfProjectMemberByProjectId(projectId);
+
+		return ResponseEntity.status(HttpStatus.FOUND).body(listOfProjectMemberByProjectId);
+		
 	}
 }
