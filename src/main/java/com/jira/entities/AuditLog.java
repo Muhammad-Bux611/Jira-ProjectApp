@@ -2,9 +2,12 @@ package com.jira.entities;
 
 import java.time.LocalDateTime;
 
+import com.jira.payloads.ActivityAction;
 import com.jira.payloads.EntityType;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -23,8 +26,11 @@ public class AuditLog {
 	    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	    private Integer logId;
 
-	    private AuditLog action;
 
+	    @Enumerated(EnumType.STRING)
+	    private ActivityAction action;
+
+	    @Enumerated(EnumType.STRING)
 	    private EntityType entityType;
 
 	    private Integer entityId;
@@ -35,7 +41,7 @@ public class AuditLog {
 
 	    @ManyToOne
 	    @JoinColumn(name = "user_id")
-	    private Users users;
+	    private Users user;
 	
 
 }

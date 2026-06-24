@@ -6,6 +6,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.jira.dto.AuditLogDTO;
 import com.jira.dto.ProjectDTO;
 import com.jira.dto.ProjectMemberDTO;
 import com.jira.dto.UserDto;
@@ -13,9 +14,13 @@ import com.jira.entities.Project;
 import com.jira.entities.ProjectMember;
 import com.jira.entities.Users;
 import com.jira.exception.ResourceNotFoundException;
+import com.jira.payloads.ActivityAction;
+import com.jira.payloads.CurrentUserService;
+import com.jira.payloads.EntityType;
 import com.jira.repository.ProjectMemberRepository;
 import com.jira.repository.ProjectRepository;
 import com.jira.repository.UserRepository;
+import com.jira.service.AuditLogService;
 import com.jira.service.ProjectMemberService;
 @Service
 public class ProjectMemberServiceImp implements ProjectMemberService {
@@ -29,6 +34,12 @@ public class ProjectMemberServiceImp implements ProjectMemberService {
 	UserRepository userRepository;
 	@Autowired
 	ProjectRepository projectRepository;
+	
+	@Autowired
+	AuditLogService auditLogService;
+	
+	@Autowired
+	CurrentUserService currentUserService;
 	
 	@Override
 	public ProjectMemberDTO createProjectMember(Integer projectId,Integer userId) {
@@ -48,6 +59,16 @@ public class ProjectMemberServiceImp implements ProjectMemberService {
 		projectMember.setUsers(user);
 		
 		ProjectMember savedProjectMember = projectMemberRepository.save(projectMember);
+		
+		AuditLogDTO auditLogDTO = new AuditLogDTO();
+		auditLogDTO.setAction(ActivityAction.CREATE);
+		auditLogDTO.setEntityType(EntityType.PROJECT_MEMBER);
+		auditLogDTO.setEntityId(savedProjectMember.getProjectMemberId());
+		auditLogDTO.setUserId(currentUserService.getCurrentUser().getUserId());
+		auditLogDTO.setDescription("project "+savedProjectMember.getProject()+" is assigned to "+savedProjectMember.getUsers());
+		
+		
+		auditLogService.createLogs(auditLogDTO);
 		
 		return mapper.map(savedProjectMember, ProjectMemberDTO.class);
 	}

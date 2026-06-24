@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.jira.dto.AuditLogDTO;
 import com.jira.entities.AuditLog;
+import com.jira.exception.ResourceNotFoundException;
 import com.jira.payloads.ActivityAction;
 import com.jira.payloads.EntityType;
 import com.jira.repository.AuditLogRepository;
@@ -41,26 +42,50 @@ public class AuditLogServiceImpl  implements AuditLogService{
 
 	@Override
 	public AuditLogDTO getLogsById(Integer logId) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		AuditLog log = auditLogRepository.findById(logId).orElseThrow(()->new ResourceNotFoundException("Log with id :"+logId+" not found"));
+		
+		return mapper.map(log, AuditLogDTO.class);
 	}
 
 	@Override
 	public List<AuditLogDTO> getLogByUser(Integer userId) {
-		// TODO Auto-generated method stub
-		return null;
+
+		List<AuditLog> logs = auditLogRepository.findByUserUserId(userId);
+		
+		if (logs.isEmpty()) {
+			throw new ResourceNotFoundException("Not any log is performed in this project so you have to perform some activity");
+		}
+		List<AuditLogDTO> listOfLogs = logs.stream().map(log->mapper.map(log, AuditLogDTO.class)).toList();
+		return listOfLogs;
 	}
 
 	@Override
 	public List<AuditLogDTO> getLogsByAction(ActivityAction action) {
-		// TODO Auto-generated method stub
-		return null;
+		List<AuditLog> logs = auditLogRepository.findByAction(action);
+		
+		if (logs.isEmpty()) {
+			throw new ResourceNotFoundException("Not any log is performed with respect to this perticular action "+action.name());
+		}
+
+		List<AuditLogDTO> listOfLogs = logs.stream().map(log->mapper.map(log, AuditLogDTO.class)).toList();
+		return listOfLogs;
+		
 	}
 
 	@Override
 	public List<AuditLogDTO> getLogsByEntity(EntityType type) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		List<AuditLog> logs = auditLogRepository.findByEntityType(type);
+		
+		if (logs.isEmpty()) {
+			throw new ResourceNotFoundException("Not any log is performed with respect to this perticular entity "+type.name());
+		}
+
+		List<AuditLogDTO> listOfLogs = logs.stream().map(log->mapper.map(log, AuditLogDTO.class)).toList();
+		return listOfLogs;
+		
+	
 	}
 
 }

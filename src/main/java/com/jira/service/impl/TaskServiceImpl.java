@@ -6,10 +6,15 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.jira.dto.AuditLogDTO;
 import com.jira.dto.TaskDto;
 import com.jira.entities.Task;
 import com.jira.exception.ResourceNotFoundException;
+import com.jira.payloads.ActivityAction;
+import com.jira.payloads.CurrentUserService;
+import com.jira.payloads.EntityType;
 import com.jira.repository.TaskRepository;
+import com.jira.service.AuditLogService;
 import com.jira.service.TaskService;
 @Service
 public class TaskServiceImpl implements TaskService {
@@ -20,6 +25,11 @@ public class TaskServiceImpl implements TaskService {
 	@Autowired
 	TaskRepository taskRepository;
 	
+	@Autowired
+	CurrentUserService currentUserService;
+	
+	@Autowired
+	AuditLogService auditLogService;
 
 	@Override
 	public TaskDto createTask(TaskDto taskDto) {
@@ -28,6 +38,17 @@ public class TaskServiceImpl implements TaskService {
 		Task task = mapper.map(taskDto, Task.class);
 		
 		Task savedTask = taskRepository.save(task);
+		
+		AuditLogDTO auditLogDTO = new AuditLogDTO();
+		auditLogDTO.setAction(ActivityAction.CREATE);
+		auditLogDTO.setEntityType(EntityType.TASK);
+		auditLogDTO.setEntityId(savedTask.getTaskId());
+		auditLogDTO.setUserId(currentUserService.getCurrentUser().getUserId());
+		auditLogDTO.setDescription("task "+savedTask.getTitle()+" is created");
+		
+		
+		auditLogService.createLogs(auditLogDTO);
+		
 		
 		return mapper.map(savedTask, TaskDto.class);
 	}
@@ -61,6 +82,19 @@ public class TaskServiceImpl implements TaskService {
 		if (task!=null) {
 		
 			taskRepository.delete(task);
+			
+
+			AuditLogDTO auditLogDTO = new AuditLogDTO();
+			auditLogDTO.setAction(ActivityAction.CREATE);
+			auditLogDTO.setEntityType(EntityType.TASK);
+			auditLogDTO.setEntityId(task.getTaskId());
+			auditLogDTO.setUserId(currentUserService.getCurrentUser().getUserId());
+			auditLogDTO.setDescription("task "+task.getTitle()+" is created");
+			
+			
+			auditLogService.createLogs(auditLogDTO);
+			
+			
 			isRemoved = true;
 			
 		}

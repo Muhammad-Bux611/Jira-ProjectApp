@@ -6,12 +6,17 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.jira.dto.AuditLogDTO;
 import com.jira.dto.DepartmentDTO;
 import com.jira.entities.Department;
 import com.jira.entities.Users;
 import com.jira.exception.ResourceNotFoundException;
+import com.jira.payloads.ActivityAction;
+import com.jira.payloads.CurrentUserService;
+import com.jira.payloads.EntityType;
 import com.jira.repository.DepartmentRepo;
 import com.jira.repository.UserRepository;
+import com.jira.service.AuditLogService;
 import com.jira.service.DepartmentService;
 
 @Service
@@ -24,6 +29,11 @@ public class DepartmentServiceImpl implements DepartmentService {
 	
 	@Autowired
 	ModelMapper mapper;
+	
+	@Autowired
+	AuditLogService auditLogService;
+	@Autowired
+	CurrentUserService currentUserService;
 
     DepartmentServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -36,6 +46,17 @@ public class DepartmentServiceImpl implements DepartmentService {
 		Department department = mapper.map(departmentDTO, Department.class);
 		
 		Department savedDepartment = departmentRepo.save(department);
+		
+		AuditLogDTO auditLogDTO = new AuditLogDTO();
+		auditLogDTO.setAction(ActivityAction.CREATE);
+		auditLogDTO.setEntityType(EntityType.DEPARTMENT);
+		auditLogDTO.setEntityId(department.getDeptId());
+		auditLogDTO.setUserId(currentUserService.getCurrentUser().getUserId());
+		auditLogDTO.setDescription("department "+department.getDeptName()+" is created");
+		
+		
+		auditLogService.createLogs(auditLogDTO);
+		
 		
 		
 		return mapper.map(savedDepartment, DepartmentDTO.class);
@@ -80,7 +101,19 @@ public class DepartmentServiceImpl implements DepartmentService {
 		
 		if (department!=null) {
 			
-			departmentRepo.delete(department);;
+			departmentRepo.delete(department);
+			
+			AuditLogDTO auditLogDTO = new AuditLogDTO();
+			auditLogDTO.setAction(ActivityAction.DELETE);
+			auditLogDTO.setEntityType(EntityType.DEPARTMENT);
+			auditLogDTO.setEntityId(department.getDeptId());
+			auditLogDTO.setUserId(currentUserService.getCurrentUser().getUserId());
+			auditLogDTO.setDescription("department "+department.getDeptName()+" is deleted");
+			
+			
+			auditLogService.createLogs(auditLogDTO);
+			
+			
 			flag =true;
 		}
 		
@@ -99,6 +132,17 @@ public class DepartmentServiceImpl implements DepartmentService {
 			users.setDepartment(department);
 			
 			Users savedUsers = userRepository.save(users);
+			
+			AuditLogDTO auditLogDTO = new AuditLogDTO();
+			auditLogDTO.setAction(ActivityAction.ASSIGN);
+			auditLogDTO.setEntityType(EntityType.DEPARTMENT);
+			auditLogDTO.setEntityId(department.getDeptId());
+			auditLogDTO.setUserId(currentUserService.getCurrentUser().getUserId());
+			auditLogDTO.setDescription("department "+department.getDeptName()+" is assigned to user");
+			
+			
+			auditLogService.createLogs(auditLogDTO);
+			
 		}
 		
 		

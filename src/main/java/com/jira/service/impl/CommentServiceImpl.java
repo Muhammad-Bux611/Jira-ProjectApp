@@ -6,10 +6,15 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.jira.dto.AuditLogDTO;
 import com.jira.dto.CommentDTO;
 import com.jira.entities.Comment;
 import com.jira.exception.ResourceNotFoundException;
+import com.jira.payloads.ActivityAction;
+import com.jira.payloads.CurrentUserService;
+import com.jira.payloads.EntityType;
 import com.jira.repository.CommentRepository;
+import com.jira.service.AuditLogService;
 import com.jira.service.CommentService;
 @Service
 public class CommentServiceImpl implements CommentService {
@@ -18,11 +23,29 @@ public class CommentServiceImpl implements CommentService {
 	CommentRepository commentRepository;
 	@Autowired
 	ModelMapper mapper;
+	
+	@Autowired
+	CurrentUserService currentUserService;
+	@Autowired
+	AuditLogService auditLogService;
 
 	@Override
 	public CommentDTO createComments(CommentDTO commentDTO) {
 		Comment comment = mapper.map(commentDTO, Comment.class);
 		Comment savedComment = commentRepository.save(comment);
+		
+
+		AuditLogDTO auditLogDTO = new AuditLogDTO();
+		auditLogDTO.setAction(ActivityAction.CREATE);
+		auditLogDTO.setEntityType(EntityType.COMMENT);
+		auditLogDTO.setEntityId(savedComment.getCommentId());
+		auditLogDTO.setUserId(currentUserService.getCurrentUser().getUserId());
+		auditLogDTO.setDescription("task "+savedComment.getContent()+" is created");
+		
+		
+		auditLogService.createLogs(auditLogDTO);
+		
+		
 		return mapper.map(savedComment, CommentDTO.class);
 	}
 
@@ -57,6 +80,15 @@ public class CommentServiceImpl implements CommentService {
 		if (comment!=null) {
 			
 			commentRepository.delete(comment);
+			AuditLogDTO auditLogDTO = new AuditLogDTO();
+			auditLogDTO.setAction(ActivityAction.DELETE);
+			auditLogDTO.setEntityType(EntityType.COMMENT);
+			auditLogDTO.setEntityId(comment.getCommentId());
+			auditLogDTO.setUserId(currentUserService.getCurrentUser().getUserId());
+			auditLogDTO.setDescription("task "+comment.getContent()+" is deleted");
+			
+			
+			auditLogService.createLogs(auditLogDTO);
 			
 			isRemoved = true;
 		}
