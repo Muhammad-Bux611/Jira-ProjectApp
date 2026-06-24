@@ -36,4 +36,7 @@ public class Users {
 	@OneToMany(mappedBy = "users")
 	private List<Comment> comment;
 	
+	@OneToMany(mappedBy = "users")
+	private List<AuditLog> auditlogs;
+	
 }
