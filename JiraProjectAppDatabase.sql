@@ -17,4 +17,4 @@ select
   select * from project;
   
   select * from project_member;
- 
+ select * from comment;
