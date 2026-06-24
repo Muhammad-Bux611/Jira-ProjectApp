@@ -33,4 +33,7 @@ public class Users {
 	@OneToMany(mappedBy = "users")
 	private List<ProjectMember> projectMember;
 	
+	@OneToMany(mappedBy = "users")
+	private List<Comment> comment;
+	
 }

@@ -2,6 +2,7 @@ package com.jira.entities;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.jira.payloads.TaskPriority;
 import com.jira.payloads.TaskStatus;
@@ -14,6 +15,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -52,4 +54,7 @@ public class Task {
     @ManyToOne
     @JoinColumn(name = "assigned_user_id")
     private Users assignedUser;
+    
+    @OneToMany(mappedBy = "task")
+    private List<Comment> comment;
 }
